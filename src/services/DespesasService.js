@@ -28,6 +28,8 @@ const construirDespesa = dadosDespesa => {
     return despesa;
 }
 
+export const limparDespesas = ()=> setData(STORAGE_DESPESAS, null)
+
 /**
  * @returns {any[]}
  */

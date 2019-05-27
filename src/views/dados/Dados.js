@@ -1,22 +1,33 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonContent } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonContent, IonFooter, IonToolbar } from "@ionic/react";
 import React from "react";
 import { FileInput } from "../../components/FileInput/FileInput";
 import { Header } from "../../components/header/Header";
-import { importarDespesas } from "../../services/DespesasService";
+import { importarDespesas, limparDespesas } from "../../services/DespesasService";
+import { toast } from "../../services/MensagemService";
+
+function limpar() {
+    limparDespesas();
+    toast('Dados excluidos com sucesso')
+}
 
 const Dados = () => (
     <div>
-        <Header titulo='Dados' />
+        <Header titulo="Dados" />
         <IonContent id="content-container" fullscreen text-center>
             <IonCard>
                 <IonCardHeader>
                     <IonCardSubtitle>Gerenciar dados</IonCardSubtitle>
                 </IonCardHeader>
                 <IonCardContent>
-                    <FileInput  change={importarDespesas}/>
+                    <FileInput change={importarDespesas} />
                 </IonCardContent>
             </IonCard>
         </IonContent>
+        <IonFooter translucent="true">
+            <IonToolbar>
+                <IonButton expand="block" fill="outline" color="danger" onClick={() => limpar()} >Limpar</IonButton>
+            </IonToolbar>
+        </IonFooter>
     </div>
 );
 

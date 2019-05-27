@@ -13,6 +13,14 @@ const Despesas = () => {
         setDespesas(filtrarDespesas(filtro));
     }
 
+    function calcularTotal() {
+        if (despesas && despesas.length) {
+            return despesas.reduce((total, item) => total + item.total, 0).toFixed(2);
+        }
+
+        return 0;
+    }
+
     return (
         <div>
             <IonHeader class="header header-md hydrated">
@@ -36,7 +44,7 @@ const Despesas = () => {
             </IonContent>
             <IonFooter translucent="true">
                 <IonToolbar>
-                    <IonItem><IonLabel>Total: {despesas.reduce((total, item) => total + item.total, 0).toFixed(2)} </IonLabel> </IonItem>
+                    <IonItem><IonLabel>Total: {calcularTotal()} </IonLabel> </IonItem>
                 </IonToolbar>
             </IonFooter>
         </div>

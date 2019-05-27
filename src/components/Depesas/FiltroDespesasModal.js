@@ -1,5 +1,5 @@
 
-import { IonButtons, IonCard, IonCardContent, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar, IonFooter, IonButton } from '@ionic/react';
+import { IonButtons, IonCard, IonCardContent, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar, IonFooter, IonButton, IonGrid, IonRow, IonCol, IonDatetime } from '@ionic/react';
 import React, { useState } from 'react';
 import { mapearColunas } from '../../services/DespesasService';
 import { Autocomplete } from '../autocomplete/Autocomplete';
@@ -7,7 +7,7 @@ import { Autocomplete } from '../autocomplete/Autocomplete';
 export const FiltroDespesasModal = props => {
 
     const [filtros, setFiltros] = useState({});
-    const [colunas, setColunas] = useState(mapearColunas());
+    const colunas = useState(mapearColunas())[0];
     const [complete, setComplete] = useState("");
 
     function setForm(e) {
@@ -21,8 +21,8 @@ export const FiltroDespesasModal = props => {
         <IonModal isOpen={props.show} onDidDismiss={() => props.hide()} >
             <IonHeader class="header header-md hydrated">
                 <IonToolbar class="hydrated">
-                    <IonButtons slot="end">
-                        <IonIcon name='search' size='large' onClick={() => props.filtrar(filtros)} />
+                    <IonButtons slot="start">
+                        <IonIcon name='arrow-round-back' size='large' onClick={() => props.hide()} />
                     </IonButtons>
                     <IonTitle class="title-md hydrated"> Filtro de Despesas</IonTitle>
                 </IonToolbar>
@@ -46,16 +46,35 @@ export const FiltroDespesasModal = props => {
 
                         <IonItem>
                             <IonLabel position="floating">Origem</IonLabel>
-                            <IonInput type="text" value={filtros.origem} name="origem" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("origem")}/>
+                            <IonInput type="text" value={filtros.origem} name="origem" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("origem")} />
                         </IonItem>
                         <Autocomplete name="origem" show={complete} options={colunas.origens} search={filtros.origem} onSelect={e => { setForm(e); setComplete("") }} />
+                        
+                        <IonItem>
+                            <IonLabel position="floating">Data Inicial</IonLabel>
+                            <IonDatetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"  value={filtros.dataInicio} name="dataInicio" onIonChange={e => setForm(e)} />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Data Final</IonLabel>
+                            <IonDatetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" value={filtros.dataFim} name="dataFim" onIonChange={e => setForm(e)} />
+                        </IonItem>
 
                     </IonCardContent>
                 </IonCard>
             </IonContent>
             <IonFooter translucent="true">
                 <IonToolbar>
-                    <IonButton expand="block" fill="outline" color="dark" onClick={() => setFiltros({})} >Limpar Filtros</IonButton>
+                    <IonGrid>
+                        <IonRow>
+                            <IonCol size="6">
+                                <IonButton expand="block" fill="outline" color="dark" onClick={() => setFiltros({})} >Limpar</IonButton>
+                            </IonCol>
+                            <IonCol size="6">
+                                <IonButton expand="block" fill="outline" color="success" onClick={() => props.filtrar(filtros)} >Filtrar</IonButton>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
                 </IonToolbar>
             </IonFooter>
         </IonModal>

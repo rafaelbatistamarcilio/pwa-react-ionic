@@ -1,9 +1,8 @@
-import { IonButton, IonContent, IonFooter, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonLabel, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useState } from 'react';
 import { DespesasLista } from '../../components/Depesas/DespesasLista/DespesasLista';
 import { FiltroDespesasModal } from '../../components/Depesas/FiltroDespesasModal';
-import { Header } from '../../components/header/Header';
-import { listarDespesas, filtrarDespesas } from '../../services/DespesasService';
+import { filtrarDespesas, listarDespesas } from '../../services/DespesasService';
 
 const Despesas = () => {
     const [despesas, setDespesas] = useState(listarDespesas());
@@ -16,14 +15,28 @@ const Despesas = () => {
 
     return (
         <div>
-            <Header titulo='Despesas' />
+            <IonHeader class="header header-md hydrated">
+                <IonToolbar class="hydrated">
+                    <IonButtons slot="start">
+                        <IonMenuButton menu="app-menu" >
+                            <IonIcon name='menu' size='large' />
+                        </IonMenuButton>
+                    </IonButtons>
+                    <IonTitle class="title-md hydrated"> Despesas </IonTitle>
+                    <IonButtons slot="end">
+                        <IonButton menu="app-menu" onClick={() => setFiltrar(true)}>
+                            <IonIcon name='options' size='large' />
+                        </IonButton>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
             <IonContent id="content-container" fullscreen text-center>
                 <DespesasLista data={despesas} />
                 <FiltroDespesasModal show={filtrar} hide={() => setFiltrar(false)} filtrar={(e) => filtrarDados(e)} />
             </IonContent>
             <IonFooter translucent="true">
                 <IonToolbar>
-                    <IonButton expand="block" fill="outline" color="dark" onClick={() => setFiltrar(true)} >Filtros</IonButton>
+                    <IonItem><IonLabel>Total: {despesas.reduce((total, item) => total + item.total, 0).toFixed(2)} </IonLabel> </IonItem>
                 </IonToolbar>
             </IonFooter>
         </div>

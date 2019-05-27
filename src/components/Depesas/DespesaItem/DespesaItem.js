@@ -7,7 +7,7 @@ export const DespesaItem = prop => (
             <IonText color="primary">
                 <h3> {prop.dados.tipo}</h3>
             </IonText>
-            <p>{prop.dados.descricao}</p>
+            <p>{prop.dados.descricao +' - '+ prop.dados.data}</p>
             <IonText color="secondary">
                 <p>{prop.dados.total}</p>
             </IonText>

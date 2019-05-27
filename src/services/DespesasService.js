@@ -1,5 +1,6 @@
 import { excelToJson } from "./ExcelService";
 import { getStore, setData } from "./LocalStorageService";
+import { toast } from "./MensagemService";
 
 const STORAGE_DESPESAS = 'STORAGE_DESPESAS';
 
@@ -9,6 +10,7 @@ export const importarDespesas = async selectorFiles => {
     let storage = getStore(STORAGE_DESPESAS);
     storage = storage.concat(despesas);
     setData(STORAGE_DESPESAS, storage);
+    toast('Dados importados');
 }
 
 const construirDespesas = planilha => {
@@ -37,6 +39,8 @@ export const filtrarDespesas = filtros => {
         let possuiDescricao = true;
         let possuiTipo = true;
         let possuiOrigem = true;
+        let possuiDataInicio = true;
+        let possuiDataFim = true;
 
         if (filtros.descricao && item.descricao.toUpperCase().indexOf(filtros.descricao.toUpperCase()) === -1) {
             possuiDescricao = false;
@@ -50,7 +54,23 @@ export const filtrarDespesas = filtros => {
             possuiOrigem = false;
         }
 
-        return possuiDescricao && possuiTipo && possuiOrigem;
+        if (filtros.dataInicio) {
+            const dataInicio = filtros.dataInicio.substr(0,10).split('-').join('');
+            const data = item.data.split('/').reverse().join('');
+            if (data < dataInicio) {
+                possuiDataInicio = false;
+            }
+        }
+
+        if (filtros.dataFim) {
+            const dataFim = filtros.dataFim.substr(0,10).split('-').join('');
+            const data = item.data.split('/').reverse().join('');
+            if (data > dataFim) {
+                possuiDataFim = false;
+            }
+        }
+
+        return possuiDescricao && possuiTipo && possuiOrigem && possuiDataInicio && possuiDataFim;
     })
 }
 

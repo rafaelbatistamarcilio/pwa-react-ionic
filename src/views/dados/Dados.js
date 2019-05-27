@@ -4,7 +4,6 @@ import { FileInput } from "../../components/FileInput/FileInput";
 import { Header } from "../../components/header/Header";
 import { importarDespesas } from "../../services/DespesasService";
 
-const tipoArquivo = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const Dados = () => (
     <div>
         <Header titulo='Dados' />
@@ -14,7 +13,7 @@ const Dados = () => (
                     <IonCardSubtitle>Gerenciar dados</IonCardSubtitle>
                 </IonCardHeader>
                 <IonCardContent>
-                    <FileInput  tipoArquivo={tipoArquivo} change={importarDespesas}/>
+                    <FileInput  change={importarDespesas}/>
                 </IonCardContent>
             </IonCard>
         </IonContent>

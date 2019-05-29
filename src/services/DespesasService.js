@@ -22,7 +22,7 @@ const construirDespesas = planilha => {
 const construirDespesa = dadosDespesa => {
     let despesa = {};
     Object.keys(dadosDespesa).forEach(key => despesa[key.toLocaleLowerCase()] = dadosDespesa[key]);
-    despesa.id = new Date().getTime() + Math.random();
+    despesa.id = new Date().getTime() + '-'+Math.random();
     despesa.total = Number(despesa.total.replace('R$ ', ''));
     despesa.valor = Number(despesa.valor.replace('R$ ', ''));
     return despesa;

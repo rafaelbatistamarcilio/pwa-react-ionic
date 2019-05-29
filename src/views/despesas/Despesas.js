@@ -1,12 +1,15 @@
-import { IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonLabel, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonItem, IonLabel, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useState } from 'react';
+import { CadastroDespesaModal } from '../../components/Depesas/CadastroDespesaModal';
 import { DespesasLista } from '../../components/Depesas/DespesasLista/DespesasLista';
 import { FiltroDespesasModal } from '../../components/Depesas/FiltroDespesasModal';
-import { filtrarDespesas, listarDespesas } from '../../services/DespesasService';
+import { filtrarDespesas, listarDespesas, adicionarDespesa } from '../../services/DespesasService';
+import { toast } from '../../services/MensagemService';
 
 const Despesas = () => {
     const [despesas, setDespesas] = useState(listarDespesas());
     const [filtrar, setFiltrar] = useState(false);
+    const [novo, setNovo] = useState(false);
 
     function filtrarDados(filtro) {
         setFiltrar(false);
@@ -41,12 +44,18 @@ const Despesas = () => {
             <IonContent id="content-container" fullscreen text-center>
                 <DespesasLista data={despesas} />
                 <FiltroDespesasModal show={filtrar} hide={() => setFiltrar(false)} filtrar={(e) => filtrarDados(e)} />
+                <CadastroDespesaModal show={novo} hide={() => setNovo(false)} salvar={(e) => {adicionarDespesa(e); toast('Despesa Adicionada') }} />
             </IonContent>
             <IonFooter translucent="true">
                 <IonToolbar>
                     <IonItem><IonLabel>Total: {calcularTotal()} </IonLabel> </IonItem>
                 </IonToolbar>
             </IonFooter>
+                <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                    <IonFabButton onClick={()=> setNovo(true)}>
+                        <IonIcon name="add" />
+                    </IonFabButton>
+                </IonFab>
         </div>
     );
 }

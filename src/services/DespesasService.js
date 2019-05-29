@@ -4,6 +4,13 @@ import { toast } from "./MensagemService";
 
 const STORAGE_DESPESAS = 'STORAGE_DESPESAS';
 
+export const adicionarDespesa = despesa => {
+    const despesas = getStore(STORAGE_DESPESAS);
+    despesa.id = new Date().getTime();
+    despesas.push(despesa);
+    setData(STORAGE_DESPESAS, despesas);
+}
+
 export const importarDespesas = async selectorFiles => {
     const dados = await excelToJson(selectorFiles.item(0));
     const despesas = construirDespesas(dados);
@@ -22,13 +29,13 @@ const construirDespesas = planilha => {
 const construirDespesa = dadosDespesa => {
     let despesa = {};
     Object.keys(dadosDespesa).forEach(key => despesa[key.toLocaleLowerCase()] = dadosDespesa[key]);
-    despesa.id = new Date().getTime() + '-'+Math.random();
+    despesa.id = new Date().getTime() + '-' + Math.random();
     despesa.total = Number(despesa.total.replace('R$ ', ''));
     despesa.valor = Number(despesa.valor.replace('R$ ', ''));
     return despesa;
 }
 
-export const limparDespesas = ()=> setData(STORAGE_DESPESAS, null)
+export const limparDespesas = () => setData(STORAGE_DESPESAS, null)
 
 /**
  * @returns {any[]}
@@ -57,7 +64,7 @@ export const filtrarDespesas = filtros => {
         }
 
         if (filtros.dataInicio) {
-            const dataInicio = filtros.dataInicio.substr(0,10).split('-').join('');
+            const dataInicio = filtros.dataInicio.substr(0, 10).split('-').join('');
             const data = item.data.split('/').reverse().join('');
             if (data < dataInicio) {
                 possuiDataInicio = false;
@@ -65,7 +72,7 @@ export const filtrarDespesas = filtros => {
         }
 
         if (filtros.dataFim) {
-            const dataFim = filtros.dataFim.substr(0,10).split('-').join('');
+            const dataFim = filtros.dataFim.substr(0, 10).split('-').join('');
             const data = item.data.split('/').reverse().join('');
             if (data > dataFim) {
                 possuiDataFim = false;
@@ -83,7 +90,8 @@ export const mapearColunas = () => {
     return {
         tipos: listarTipos(),
         origens: listarOrigens(),
-        descricoes: listarDescricoes()
+        descricoes: listarDescricoes(),
+        vendedores: listarVendedores()
     }
 };
 
@@ -95,3 +103,6 @@ export const listarOrigens = () => listarDespesas().map(despesa => despesa.orige
 
 /** @returns {string[]} */
 export const listarDescricoes = () => listarDespesas().map(despesa => despesa.descricao).filter(fintrarUnicos);
+
+/** @returns {string[]} */
+export const listarVendedores = () => listarDespesas().map(despesa => despesa.vendedor).filter(fintrarUnicos);

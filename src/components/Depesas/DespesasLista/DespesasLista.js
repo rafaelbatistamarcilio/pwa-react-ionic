@@ -1,5 +1,5 @@
 
-import { IonList, IonIcon } from '@ionic/react';
+import { IonIcon, IonList } from '@ionic/react';
 import React, { useState } from 'react';
 import { DespesaItem } from '../DespesaItem/DespesaItem';
 

@@ -1,8 +1,9 @@
 
-import { IonButtons, IonCard, IonCardContent, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar, IonFooter, IonButton, IonGrid, IonRow, IonCol, IonDatetime } from '@ionic/react';
+import { IonButtons, IonCard, IonCardContent, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar, IonFooter, IonButton, IonGrid, IonRow, IonCol, IonDatetime, IonTextarea } from '@ionic/react';
 import React, { useState } from 'react';
-import { mapearColunas } from '../../services/DespesasService';
+import { mapearColunas, isDespesaValida, adicionarDespesa } from '../../services/DespesasService';
 import { Autocomplete } from '../autocomplete/Autocomplete';
+import { toast } from '../../services/MensagemService';
 
 export const CadastroDespesaModal = props => {
 
@@ -17,6 +18,17 @@ export const CadastroDespesaModal = props => {
         setFormData(form)
     }
 
+    function salvar() {
+        if (!isDespesaValida(formData)) {
+            toast('Preencha o formulario corretamente!');
+        } else {
+            adicionarDespesa(formData); 
+            toast('Despesa Adicionada');
+            props.hide();
+            props.onSave();
+        }
+    }
+
     return (
         <IonModal isOpen={props.show} onDidDismiss={() => props.hide()} >
             <IonHeader class="header header-md hydrated">
@@ -28,13 +40,18 @@ export const CadastroDespesaModal = props => {
                 </IonToolbar>
             </IonHeader>
 
-            <IonContent>
-                <IonCard>
+            <IonContent >
+                <IonCard class="paddingBottom50">
                     <IonCardContent>
 
                         <IonItem>
-                            <IonLabel position="floating">Descrição</IonLabel>
-                            <IonInput type="text" value={formData.descricao} name="descricao" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("descricao")} />
+                            <IonLabel position="floating">Data </IonLabel>
+                            <IonDatetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" value={formData.data} name="data" onIonChange={e => setForm(e)} />
+                        </IonItem>
+
+                        <IonItem >
+                            <IonLabel position="floating">Descrição:</IonLabel>
+                            <IonInput required="true" type="text" value={formData.descricao} name="descricao" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("descricao")} />
                         </IonItem>
                         <Autocomplete name="descricao" show={complete} options={colunas.descricoes} search={formData.descricao} onSelect={e => { setForm(e); setComplete("") }} />
 
@@ -55,6 +72,18 @@ export const CadastroDespesaModal = props => {
                             <IonInput type="text" value={formData.vendedor} name="vendedor" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("vendedor")} />
                         </IonItem>
                         <Autocomplete name="vendedor" show={complete} options={colunas.vendedores} search={formData.vendedor} onSelect={e => { setForm(e); setComplete("") }} />
+                        
+                        <IonItem>
+                            <IonLabel position="floating">Marca</IonLabel>
+                            <IonInput type="tex" value={formData.marca} name="marca" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("marca")} />
+                        </IonItem>
+                        <Autocomplete name="marca" show={complete} options={colunas.marcas} search={formData.marca} onSelect={e => { setForm(e); setComplete("") }} />
+
+                        <IonItem>
+                            <IonLabel position="floating">Medida</IonLabel>
+                            <IonInput type="tex" value={formData.medida} name="medida" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("medida")} />
+                        </IonItem>
+                        <Autocomplete name="medida" show={complete} options={colunas.medidas} search={formData.medida} onSelect={e => { setForm(e); setComplete("") }} />
 
                         <IonItem>
                             <IonLabel position="floating">Quantidade</IonLabel>
@@ -62,13 +91,18 @@ export const CadastroDespesaModal = props => {
                         </IonItem>
 
                         <IonItem>
-                            <IonLabel position="floating">Preco</IonLabel>
-                            <IonInput type="number" value={formData.preco} name="preco" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("preco")} />
+                            <IonLabel position="floating">Valor</IonLabel>
+                            <IonInput type="number" value={formData.valor} name="valor" onIonChange={e => setForm(e)} />
                         </IonItem>
 
                         <IonItem>
-                            <IonLabel position="floating">Data </IonLabel>
-                            <IonDatetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" value={formData.data} name="data" onIonChange={e => setForm(e)} />
+                            <IonLabel position="floating">Total</IonLabel>
+                            <IonInput type="number" disabled="true" value={(formData.valor * formData.quantidade).toFixed(2)} name="total" onIonChange={e => setForm(e)} />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Observação</IonLabel>
+                            <IonTextarea value={formData.obs} name="obs" onIonChange={e => setForm(e)}></IonTextarea>
                         </IonItem>
 
                     </IonCardContent>
@@ -79,10 +113,10 @@ export const CadastroDespesaModal = props => {
                     <IonGrid>
                         <IonRow>
                             <IonCol size="6">
-                                <IonButton expand="block" fill="outline" color="dark" onClick={() => setFormData({})} >Limpar</IonButton>
+                                <IonButton expand="block" fill="outline" color="dark" onClick={() => { setFormData({}); props.hide() }} >Cancelar</IonButton>
                             </IonCol>
                             <IonCol size="6">
-                                <IonButton expand="block" fill="outline" color="success" onClick={() => props.salvar(formData)} >Salvar</IonButton>
+                                <IonButton expand="block" fill="outline" color="success" onClick={() => salvar()} >Salvar</IonButton>
                             </IonCol>
                         </IonRow>
                     </IonGrid>

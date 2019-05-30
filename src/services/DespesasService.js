@@ -4,11 +4,30 @@ import { toast } from "./MensagemService";
 
 const STORAGE_DESPESAS = 'STORAGE_DESPESAS';
 
+export const isDespesaValida = despesa => {
+    return  despesa && despesa.valor && despesa.total && despesa.quantidade && despesa.descricao && despesa.vendedor && 
+            despesa.origem && despesa.tipo && despesa.data && despesa.medida && despesa.marca;
+}
+
 export const adicionarDespesa = despesa => {
     const despesas = getStore(STORAGE_DESPESAS);
     despesa.id = new Date().getTime();
+    despesa.quantidade = Number(despesa.quantidade).toFixed(2);
+    despesa.valor = Number(despesa.valor).toFixed(2);
+    despesa.total = (despesa.quantidade * despesa.valor).toFixed(2);
+    despesa.data = despesa.data.substr(0,10).split('-').reverse().join('/')
     despesas.push(despesa);
     setData(STORAGE_DESPESAS, despesas);
+}
+
+export const excluirDespesa = id => {
+    const tamanhoOriginal = getStore(STORAGE_DESPESAS).length;
+    const despesas = getStore(STORAGE_DESPESAS).filter(despesa => despesa.id !== id);
+    if (despesas.length !== tamanhoOriginal) {
+        setData(STORAGE_DESPESAS, despesas);
+        return true;
+    }
+    return false;
 }
 
 export const importarDespesas = async selectorFiles => {
@@ -91,7 +110,9 @@ export const mapearColunas = () => {
         tipos: listarTipos(),
         origens: listarOrigens(),
         descricoes: listarDescricoes(),
-        vendedores: listarVendedores()
+        vendedores: listarVendedores(),
+        marcas: listarMarcas(),
+        medidas: listarMedidas()
     }
 };
 
@@ -106,3 +127,9 @@ export const listarDescricoes = () => listarDespesas().map(despesa => despesa.de
 
 /** @returns {string[]} */
 export const listarVendedores = () => listarDespesas().map(despesa => despesa.vendedor).filter(fintrarUnicos);
+
+/** @returns {string[]} */
+export const listarMarcas = () => listarDespesas().map(despesa => despesa.marca).filter(fintrarUnicos);
+
+/** @returns {string[]} */
+export const listarMedidas = () => listarDespesas().map(despesa => despesa.medida).filter(fintrarUnicos);

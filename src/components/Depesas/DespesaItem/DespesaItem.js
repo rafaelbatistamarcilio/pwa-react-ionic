@@ -10,9 +10,13 @@ function excluir(id) {
     }
 }
 
+function editar(despesa) {
+    emitirMensagem('DESPESA_EDITAR', despesa )
+}
+
 export const DespesaItem = props => (
-    <IonItemSliding>
-        <IonItem detail>
+    <IonItemSliding >
+        <IonItem detail onClick={() => editar(props.dados)}>
             <IonLabel text-wrap >
                 <IonText color="primary">
                     <h3> {props.dados.tipo}</h3>
@@ -24,7 +28,7 @@ export const DespesaItem = props => (
             </IonLabel>
         </IonItem>
         <IonItemOptions side="end">
-            <IonItemOption color="danger" expandable onClick={()=> excluir(props.dados.id) }> Excluir <IonIcon size="large" name="trash"></IonIcon></IonItemOption>
+            <IonItemOption color="danger" expandable onClick={() => excluir(props.dados.id)}> Excluir <IonIcon size="large" name="trash"></IonIcon></IonItemOption>
         </IonItemOptions>
     </IonItemSliding>
 )

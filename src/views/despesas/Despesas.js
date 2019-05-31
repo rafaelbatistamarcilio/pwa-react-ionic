@@ -3,27 +3,35 @@ import React, { useState } from 'react';
 import { CadastroDespesaModal } from '../../components/Depesas/CadastroDespesaModal';
 import { DespesasLista } from '../../components/Depesas/DespesasLista/DespesasLista';
 import { FiltroDespesasModal } from '../../components/Depesas/FiltroDespesasModal';
-import { filtrarDespesas, listarDespesas } from '../../services/DespesasService';
+import { calcularTotal, filtrarDespesas, listarDespesas } from '../../services/DespesasService';
 import { monitorarMensagens } from '../../services/MensagemService';
+
+let onExcluir;
+let onEditar;
+monitorarMensagens('EXCLUSAO:DESPESA', e =>  onExcluir() );
+monitorarMensagens('DESPESA_EDITAR', e => onEditar(e));
 
 const Despesas = () => {
     const [despesas, setDespesas] = useState(listarDespesas());
     const [filtrar, setFiltrar] = useState(false);
     const [novo, setNovo] = useState(false);
+    const [despesaEdicao, setDespesaEdicao] = useState(null);
 
-    monitorarMensagens('EXCLUSAO:DESPESA', e=> setDespesas(listarDespesas()))
+    onExcluir = e => setDespesas(listarDespesas());
+    onEditar = e => editar(e);
+
+    function cadastrar() {
+        setDespesaEdicao(null);
+        setNovo(true);
+    }
+    function editar(dados) {
+        setDespesaEdicao(dados);
+        setNovo(true);
+    }
 
     function filtrarDados(filtro) {
         setFiltrar(false);
         setDespesas(filtrarDespesas(filtro));
-    }
-
-    function calcularTotal() {
-        if (despesas && despesas.length) {
-            return despesas.reduce((total, item) => total + Number(item.total), 0).toFixed(2);
-        }
-
-        return 0;
     }
 
     return (
@@ -47,17 +55,17 @@ const Despesas = () => {
             <IonContent id="content-container" fullscreen text-center>
                 <DespesasLista data={despesas} />
                 <FiltroDespesasModal show={filtrar} hide={() => setFiltrar(false)} filtrar={(e) => filtrarDados(e)} />
-                <CadastroDespesaModal show={novo} hide={() => setNovo(false)} onSave={() => setDespesas(listarDespesas())} />
+                <CadastroDespesaModal show={novo} dados={despesaEdicao} hide={() => {setNovo(false); setDespesaEdicao(null)}} onSave={() => setDespesas(listarDespesas())} />
             </IonContent>
 
             <IonFooter translucent="true">
                 <IonToolbar>
-                    <IonItem><IonLabel>Total: {calcularTotal()} </IonLabel> </IonItem>
+                    <IonItem><IonLabel>Total: {calcularTotal(despesas)} </IonLabel> </IonItem>
                 </IonToolbar>
             </IonFooter>
 
             <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                <IonFabButton onClick={() => setNovo(true)}>
+                <IonFabButton onClick={() => cadastrar()}>
                     <IonIcon name="add" />
                 </IonFabButton>
             </IonFab>

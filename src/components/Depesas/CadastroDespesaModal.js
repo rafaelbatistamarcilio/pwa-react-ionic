@@ -1,19 +1,18 @@
 
 import { IonButtons, IonCard, IonCardContent, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar, IonFooter, IonButton, IonGrid, IonRow, IonCol, IonDatetime, IonTextarea } from '@ionic/react';
 import React, { useState } from 'react';
-import { mapearColunas, isDespesaValida, adicionarDespesa } from '../../services/DespesasService';
+import { mapearColunas, isDespesaValida, adicionarDespesa, editarDespesa } from '../../services/DespesasService';
 import { Autocomplete } from '../autocomplete/Autocomplete';
 import { toast } from '../../services/MensagemService';
 
 export const CadastroDespesaModal = props => {
-
     const [formData, setFormData] = useState({});
     const colunas = useState(mapearColunas())[0];
     const [complete, setComplete] = useState("");
 
     function setForm(e) {
         let form = {};
-        Object.keys(formData).forEach(key => form[key] = formData[key])
+        Object.keys(formData).forEach(key => form[key] = formData[key] ? formData[key] : props.dados ? props.dados[key] : null);
         form[e.target.name] = e.target.value;
         setFormData(form)
     }
@@ -22,15 +21,29 @@ export const CadastroDespesaModal = props => {
         if (!isDespesaValida(formData)) {
             toast('Preencha o formulario corretamente!');
         } else {
-            adicionarDespesa(formData); 
+            if (props.dados && props.dados.id) {
+                const edit = {};
+                Object.keys(formData).forEach(key => edit[key] = formData[key]);
+                edit.id = props.dados.id;
+                editarDespesa(edit);
+            } else {
+                adicionarDespesa(formData);
+            }
+            setFormData({})
             toast('Despesa Adicionada');
             props.hide();
             props.onSave();
         }
     }
 
+    function carregarDados(dados) {
+        if (dados) {
+            setFormData(dados);
+        }
+    }
+
     return (
-        <IonModal isOpen={props.show} onDidDismiss={() => props.hide()} >
+        <IonModal isOpen={props.show} onDidDismiss={() => props.hide()} onIonModalDidPresent={() => carregarDados(props.dados)} >
             <IonHeader class="header header-md hydrated">
                 <IonToolbar class="hydrated">
                     <IonButtons slot="start">
@@ -43,6 +56,7 @@ export const CadastroDespesaModal = props => {
             <IonContent >
                 <IonCard class="paddingBottom50">
                     <IonCardContent>
+                        <IonInput type="hidden" value={formData.id} name="id" onChange={e => setForm(e)} />
 
                         <IonItem>
                             <IonLabel position="floating">Data </IonLabel>
@@ -72,7 +86,7 @@ export const CadastroDespesaModal = props => {
                             <IonInput type="text" value={formData.vendedor} name="vendedor" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("vendedor")} />
                         </IonItem>
                         <Autocomplete name="vendedor" show={complete} options={colunas.vendedores} search={formData.vendedor} onSelect={e => { setForm(e); setComplete("") }} />
-                        
+
                         <IonItem>
                             <IonLabel position="floating">Marca</IonLabel>
                             <IonInput type="tex" value={formData.marca} name="marca" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("marca")} />

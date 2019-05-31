@@ -20,6 +20,13 @@ export const adicionarDespesa = despesa => {
     setData(STORAGE_DESPESAS, despesas);
 }
 
+export const editarDespesa = despesa => {
+    const despesas = getStore(STORAGE_DESPESAS);
+    const despesaAntiga = despesas.filter(item => item.id === despesa.id)[0];
+    Object.keys(despesaAntiga).forEach(key => despesaAntiga[key] = despesa[key]);
+    setData(STORAGE_DESPESAS, despesas);
+}
+
 export const excluirDespesa = id => {
     const tamanhoOriginal = getStore(STORAGE_DESPESAS).length;
     const despesas = getStore(STORAGE_DESPESAS).filter(despesa => despesa.id !== id);
@@ -133,3 +140,10 @@ export const listarMarcas = () => listarDespesas().map(despesa => despesa.marca)
 
 /** @returns {string[]} */
 export const listarMedidas = () => listarDespesas().map(despesa => despesa.medida).filter(fintrarUnicos);
+
+export const calcularTotal = itens => {
+    if (itens && itens.length) {
+        return itens.reduce((total, item) => total + Number(item.total), 0).toFixed(2);
+    }
+    return 0;
+}

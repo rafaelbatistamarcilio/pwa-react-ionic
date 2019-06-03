@@ -1,17 +1,18 @@
 
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Home } from './../../views/home/Home';
+import { Messages } from '../../constants';
 
-const Dados = lazy(() => import("./../../views/dados/Dados"));
-const Despesas = lazy(() => import("./../../views/despesas/Despesas"));
-
-export const Router = () => (
+export const Router = props => (
     <Switch >
-        <Route path="/" component={Home} exact={true} />
-        <Suspense fallback={<div>Loading...</div>}>
-            <Route path="/dados" component={Dados} />
-            <Route path="/despesas" component={Despesas} />
+        <Suspense fallback={<div>{Messages.COMUM.CARREGANDO}</div>}>
+            {Object.values(props.routes)
+                .map(route => (
+                    <Route  key={route.path} 
+                            path={route.path} 
+                            component={route.component}
+                            exact={route.exact} />
+                ) )}
         </Suspense>
     </Switch>
 )

@@ -4,10 +4,11 @@ import { FileInput } from "../../components/FileInput/FileInput";
 import { Header } from "../../components/header/Header";
 import { importarDespesas, limparDespesas } from "../../services/DespesasService";
 import { toast } from "../../services/MensagemService";
+import { Messages } from "../../constants";
 
 function limpar() {
     limparDespesas();
-    toast('Dados excluidos com sucesso')
+    toast(Messages.DADOS.EXCLUSAO.SUCESSO)
 }
 
 const Dados = () => (

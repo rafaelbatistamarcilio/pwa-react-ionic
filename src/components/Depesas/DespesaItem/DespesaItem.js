@@ -2,16 +2,17 @@ import { IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLab
 import React from 'react';
 import { excluirDespesa } from '../../../services/DespesasService';
 import { emitirMensagem, toast } from '../../../services/MensagemService';
+import { Events } from '../../../constants';
 
 function excluir(id) {
     if (excluirDespesa(id)) {
-        emitirMensagem('EXCLUSAO:DESPESA', id);
+        emitirMensagem(Events.DESPESAS.EXCLUSAO, id);
         toast(`Despesa id ${id} excluída`);
     }
 }
 
 function editar(despesa) {
-    emitirMensagem('DESPESA_EDITAR', despesa )
+    emitirMensagem(Events.DESPESAS.EDICAO, despesa )
 }
 
 export const DespesaItem = props => (

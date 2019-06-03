@@ -8,6 +8,7 @@
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "ionicons": "^4.5.8",
+    "moment": "^2.24.0",
     "path": "^0.12.7",
     "pubsub-js": "^1.7.0",
     "react": "^16.8.6",

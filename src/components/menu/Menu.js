@@ -1,32 +1,20 @@
-import { IonContent, IonHeader, IonItem, IonList, IonMenu, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonList, IonMenu, IonTitle, IonToolbar } from '@ionic/react';
 import React from "react";
-import { Link } from 'react-router-dom';
+import './Menu.css';
+import { MenuItem } from './MenuItem';
+import { Messages } from '../../constants';
 
-export const Menu = () => (
+export const Menu = props => (
     <IonMenu side="start" type="overlay" menuId="app-menu" contentId="content-container">
         <IonHeader>
             <IonToolbar color="dark">
-                <IonTitle>Menu</IonTitle>
+                <IonTitle>{Messages.COMUM.MENU}</IonTitle>
             </IonToolbar>
         </IonHeader>
 
         <IonContent>
             <IonList lines="full">
-                <IonItem>
-                    <IonMenuButton>
-                        <Link to={{ pathname: '/' }} > Home</Link>
-                    </IonMenuButton>
-                </IonItem>
-                <IonItem>
-                    <IonMenuButton>
-                        <Link to={{ pathname: '/dados' }} > Dados</Link>
-                    </IonMenuButton>
-                </IonItem>
-                <IonItem>
-                    <IonMenuButton>
-                        <Link to={{ pathname: '/despesas' }} > Despesas </Link>
-                    </IonMenuButton>
-                </IonItem>
+                {Object.values(props.routes).map(route => <MenuItem key={route.path} path={route.path} label={route.label} />)}
             </IonList >
         </IonContent >
     </IonMenu >

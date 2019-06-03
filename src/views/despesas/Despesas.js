@@ -1,15 +1,20 @@
-import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonItem, IonLabel, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent } from '@ionic/react';
 import React, { useState } from 'react';
+import { New } from '../../components/Buttons/New';
 import { CadastroDespesaModal } from '../../components/Depesas/CadastroDespesaModal';
-import { DespesasLista } from '../../components/Depesas/DespesasLista/DespesasLista';
+import { DespesaItem } from '../../components/Depesas/DespesaItem/DespesaItem';
 import { FiltroDespesasModal } from '../../components/Depesas/FiltroDespesasModal';
+import { LabelFooter } from '../../components/Footer/LabelFooter';
+import { ActionHeader } from '../../components/header/ActionHeader';
+import { Lista } from '../../components/lista/Lista';
+import { Events, Messages } from '../../constants';
 import { calcularTotal, filtrarDespesas, listarDespesas } from '../../services/DespesasService';
 import { monitorarMensagens } from '../../services/MensagemService';
 
 let onExcluir;
 let onEditar;
-monitorarMensagens('EXCLUSAO:DESPESA', e =>  onExcluir() );
-monitorarMensagens('DESPESA_EDITAR', e => onEditar(e));
+monitorarMensagens(Events.DESPESAS.EXCLUSAO, e => onExcluir());
+monitorarMensagens(Events.DESPESAS.EDICAO, e => onEditar(e));
 
 const Despesas = () => {
     const [despesas, setDespesas] = useState(listarDespesas());
@@ -36,39 +41,17 @@ const Despesas = () => {
 
     return (
         <div>
-            <IonHeader class="header header-md hydrated">
-                <IonToolbar class="hydrated">
-                    <IonButtons slot="start">
-                        <IonMenuButton menu="app-menu" >
-                            <IonIcon name='menu' size='large' />
-                        </IonMenuButton>
-                    </IonButtons>
-                    <IonTitle class="title-md hydrated"> Despesas </IonTitle>
-                    <IonButtons slot="end">
-                        <IonButton menu="app-menu" onClick={() => setFiltrar(true)}>
-                            <IonIcon name='options' size='large' />
-                        </IonButton>
-                    </IonButtons>
-                </IonToolbar>
-            </IonHeader>
-
+            <ActionHeader title={Messages.DESPESAS.TITULO} action={() => setFiltrar(true)} icon='options' />
+            
             <IonContent id="content-container" fullscreen text-center>
-                <DespesasLista data={despesas} />
+                <Lista data={despesas} component={DespesaItem} />
                 <FiltroDespesasModal show={filtrar} hide={() => setFiltrar(false)} filtrar={(e) => filtrarDados(e)} />
-                <CadastroDespesaModal show={novo} dados={despesaEdicao} hide={() => {setNovo(false); setDespesaEdicao(null)}} onSave={() => setDespesas(listarDespesas())} />
+                <CadastroDespesaModal show={novo} dados={despesaEdicao} hide={() => { setNovo(false); setDespesaEdicao(null) }} onSave={() => setDespesas(listarDespesas())} />
             </IonContent>
 
-            <IonFooter translucent="true">
-                <IonToolbar>
-                    <IonItem><IonLabel>Total: {calcularTotal(despesas)} </IonLabel> </IonItem>
-                </IonToolbar>
-            </IonFooter>
+            <LabelFooter label={Messages.COMUM.TOTAL + calcularTotal(despesas)} />
 
-            <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                <IonFabButton onClick={() => cadastrar()}>
-                    <IonIcon name="add" />
-                </IonFabButton>
-            </IonFab>
+            <New action={() => cadastrar()} />
         </div>
     );
 }

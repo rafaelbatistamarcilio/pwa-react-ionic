@@ -1,8 +1,11 @@
 
-import { IonButtons, IonCard, IonCardContent, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar, IonFooter, IonButton, IonGrid, IonRow, IonCol, IonDatetime } from '@ionic/react';
+import { IonCard, IonCardContent, IonContent, IonDatetime, IonInput, IonItem, IonLabel } from '@ionic/react';
 import React, { useState } from 'react';
+import Messages from '../../constants/Messages';
 import { mapearColunas } from '../../services/DespesasService';
 import { Autocomplete } from '../autocomplete/Autocomplete';
+import { AutocompleteInput } from '../Forms/Inputs/AutoCompleteInput';
+import { Modal } from '../Modal/Modal';
 
 export const FiltroDespesasModal = props => {
 
@@ -18,25 +21,26 @@ export const FiltroDespesasModal = props => {
     }
 
     return (
-        <IonModal isOpen={props.show} onDidDismiss={() => props.hide()} >
-            <IonHeader class="header header-md hydrated">
-                <IonToolbar class="hydrated">
-                    <IonButtons slot="start">
-                        <IonIcon name='arrow-round-back' size='large' onClick={() => props.hide()} />
-                    </IonButtons>
-                    <IonTitle class="title-md hydrated"> Filtro de Despesas</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+        <Modal
+            show={props.show}
+            hide={() => props.hide()}
+            title={Messages.DESPESAS.FILTRO}
+            onCancel={() => setFiltros({})}
+            onConfirm={() => props.filtrar(filtros)}
+            cancelLabel={Messages.COMUM.LIMPAR}
+            confirmLabel={Messages.COMUM.FILTRAR}>
 
             <IonContent>
                 <IonCard>
                     <IonCardContent>
 
-                        <IonItem>
-                            <IonLabel position="floating">Descrição</IonLabel>
-                            <IonInput type="text" value={filtros.descricao} name="descricao" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("descricao")} />
-                        </IonItem>
-                        <Autocomplete name="descricao" show={complete} options={colunas.descricoes} search={filtros.descricao} onSelect={e => { setForm(e); setComplete("") }} />
+                        <AutocompleteInput
+                            label={Messages.COMUM.DESCRICAO}
+                            value={filtros.descricao}
+                            name="descricao"
+                            onChange={e => setForm(e)}
+                            options={colunas.descricoes}
+                            onSelect={e => setForm(e)} />
 
                         <IonItem>
                             <IonLabel position="floating">Tipo</IonLabel>
@@ -49,10 +53,10 @@ export const FiltroDespesasModal = props => {
                             <IonInput type="text" value={filtros.origem} name="origem" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("origem")} />
                         </IonItem>
                         <Autocomplete name="origem" show={complete} options={colunas.origens} search={filtros.origem} onSelect={e => { setForm(e); setComplete("") }} />
-                        
+
                         <IonItem>
                             <IonLabel position="floating">Data Inicial</IonLabel>
-                            <IonDatetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"  value={filtros.dataInicio} name="dataInicio" onIonChange={e => setForm(e)} />
+                            <IonDatetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" value={filtros.dataInicio} name="dataInicio" onIonChange={e => setForm(e)} />
                         </IonItem>
 
                         <IonItem>
@@ -63,20 +67,6 @@ export const FiltroDespesasModal = props => {
                     </IonCardContent>
                 </IonCard>
             </IonContent>
-            <IonFooter translucent="true">
-                <IonToolbar>
-                    <IonGrid>
-                        <IonRow>
-                            <IonCol size="6">
-                                <IonButton expand="block" fill="outline" color="dark" onClick={() => setFiltros({})} >Limpar</IonButton>
-                            </IonCol>
-                            <IonCol size="6">
-                                <IonButton expand="block" fill="outline" color="success" onClick={() => props.filtrar(filtros)} >Filtrar</IonButton>
-                            </IonCol>
-                        </IonRow>
-                    </IonGrid>
-                </IonToolbar>
-            </IonFooter>
-        </IonModal>
+        </Modal >
     )
 }

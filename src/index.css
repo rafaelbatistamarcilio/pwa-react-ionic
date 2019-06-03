@@ -31,3 +31,7 @@ ion-footer {
 .paddingBottom50{
   padding-bottom: 50px
 }
+
+.sem-detalhe {
+  text-decoration: none 
+}

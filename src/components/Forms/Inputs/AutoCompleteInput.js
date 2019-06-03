@@ -19,7 +19,7 @@ export const AutocompleteInput = props => {
                 show={complete}
                 options={props.options}
                 search={props.value}
-                onSelect={e => { setComplete(''); props.onSelect(e) }} />
+                onSelect={e => { setComplete(''); props.onChange(e) }} />
         </>
     )
 }

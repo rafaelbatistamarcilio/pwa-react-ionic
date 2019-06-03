@@ -30,9 +30,13 @@ const Messages = {
         LIMPAR: 'Limpar',
         FILTRAR: 'Filtrar',
         DESCRICAO: 'Descrição',
+        ORIGEM: 'Origem',
+        TIPO: 'Tipo',
         TOTAL: 'Total:',
         MENU: 'Menu',
-        CARREGANDO: 'Carregando...'
+        CARREGANDO: 'Carregando...',
+        DATA_INICIAL: 'Data Inicial',
+        DATA_FINAL: 'Data Final'
     }
 }
 

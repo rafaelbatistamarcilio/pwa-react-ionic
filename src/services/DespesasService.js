@@ -5,8 +5,9 @@ import { toast } from "./MensagemService";
 const STORAGE_DESPESAS = 'STORAGE_DESPESAS';
 
 export const isDespesaValida = despesa => {
-    return  despesa && despesa.valor && despesa.total && despesa.quantidade && despesa.descricao && despesa.vendedor && 
-            despesa.origem && despesa.tipo && despesa.data && despesa.medida && despesa.marca;
+    return  despesa != null && despesa.valor != null && despesa.total != null && despesa.quantidade != null && 
+            despesa.descricao != null && despesa.vendedor != null && despesa.origem != null && despesa.tipo != null && 
+            despesa.data != null && despesa.medida != null && despesa.marca != null ;
 }
 
 export const adicionarDespesa = despesa => {

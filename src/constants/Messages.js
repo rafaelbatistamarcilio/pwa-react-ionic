@@ -35,8 +35,15 @@ const Messages = {
         TOTAL: 'Total:',
         MENU: 'Menu',
         CARREGANDO: 'Carregando...',
+        DATA: 'Data',
         DATA_INICIAL: 'Data Inicial',
-        DATA_FINAL: 'Data Final'
+        DATA_FINAL: 'Data Final',
+        VENDEDOR: 'Vendedor',
+        MARCA: 'Marca',
+        MEDIDA: 'Medida',
+        QUANTIDADE: 'Quantidade',
+        VALOR: 'Valor',
+        OBSERVACAO: 'Observação'
     }
 }
 

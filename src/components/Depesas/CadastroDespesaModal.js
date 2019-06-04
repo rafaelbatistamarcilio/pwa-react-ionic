@@ -1,17 +1,19 @@
 
-import { IonCard, IonCardContent, IonDatetime, IonInput, IonItem, IonLabel, IonTextarea } from '@ionic/react';
+import { IonCard, IonCardContent, IonInput } from '@ionic/react';
 import React, { useState } from 'react';
-import { Messages } from '../../constants';
+import { Formats, Messages } from '../../constants';
 import { adicionarDespesa, editarDespesa, isDespesaValida, mapearColunas } from '../../services/DespesasService';
 import { toast } from '../../services/MensagemService';
 import { copy } from '../../utils/ObjectUtils';
-import { Autocomplete } from '../autocomplete/Autocomplete';
+import { AutocompleteInput } from '../Forms/Inputs/AutoCompleteInput';
+import { Datepicker } from '../Forms/Inputs/DatePicker';
+import { NumberInput } from '../Forms/Inputs/NumberInput';
+import { TextArea } from '../Forms/Inputs/TextArea';
 import { Modal } from '../Modal/Modal';
 
 export const CadastroDespesaModal = props => {
     const [formData, setFormData] = useState({});
     const colunas = useState(mapearColunas())[0];
-    const [complete, setComplete] = useState("");
 
     function setForm(e) {
         let form = {};
@@ -62,67 +64,34 @@ export const CadastroDespesaModal = props => {
                 <IonCardContent>
                     <IonInput type="hidden" value={formData.id} name="id" onChange={e => setForm(e)} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Data </IonLabel>
-                        <IonDatetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" value={formData.data} name="data" onIonChange={e => setForm(e)} />
-                    </IonItem>
+                    <Datepicker label={Messages.COMUM.DATA} format={Formats.diaMesAno}
+                        value={formData.data} name="data" onChange={e => setForm(e)} />
 
-                    <IonItem >
-                        <IonLabel position="floating">Descrição:</IonLabel>
-                        <IonInput required="true" type="text" value={formData.descricao} name="descricao" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("descricao")} />
-                    </IonItem>
-                    <Autocomplete name="descricao" show={complete} options={colunas.descricoes} search={formData.descricao} onSelect={e => { setForm(e); setComplete("") }} />
+                    <AutocompleteInput label={Messages.COMUM.DESCRICAO} value={formData.descricao} name="descricao"
+                        onChange={e => setForm(e)} options={colunas.descricoes} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Tipo</IonLabel>
-                        <IonInput type="text" value={formData.tipo} name="tipo" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("tipo")} />
-                    </IonItem>
-                    <Autocomplete name="tipo" show={complete} options={colunas.tipos} search={formData.tipo} onSelect={e => { setForm(e); setComplete("") }} />
+                    <AutocompleteInput label={Messages.COMUM.TIPO} value={formData.tipo} name="tipo"
+                        onChange={e => setForm(e)} options={colunas.tipos} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Origem</IonLabel>
-                        <IonInput type="text" value={formData.origem} name="origem" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("origem")} />
-                    </IonItem>
-                    <Autocomplete name="origem" show={complete} options={colunas.origens} search={formData.origem} onSelect={e => { setForm(e); setComplete("") }} />
+                    <AutocompleteInput label={Messages.COMUM.ORIGEM} value={formData.origem} name="origem"
+                        onChange={e => setForm(e)} options={colunas.origens} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Vendedor</IonLabel>
-                        <IonInput type="text" value={formData.vendedor} name="vendedor" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("vendedor")} />
-                    </IonItem>
-                    <Autocomplete name="vendedor" show={complete} options={colunas.vendedores} search={formData.vendedor} onSelect={e => { setForm(e); setComplete("") }} />
+                    <AutocompleteInput label={Messages.COMUM.VENDEDOR} value={formData.vendedor} name="vendedor"
+                        onChange={e => setForm(e)} options={colunas.vendedores} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Marca</IonLabel>
-                        <IonInput type="tex" value={formData.marca} name="marca" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("marca")} />
-                    </IonItem>
-                    <Autocomplete name="marca" show={complete} options={colunas.marcas} search={formData.marca} onSelect={e => { setForm(e); setComplete("") }} />
+                    <AutocompleteInput label={Messages.COMUM.MARCA} value={formData.marca} name="marca"
+                        onChange={e => setForm(e)} options={colunas.marcas} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Medida</IonLabel>
-                        <IonInput type="tex" value={formData.medida} name="medida" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("medida")} />
-                    </IonItem>
-                    <Autocomplete name="medida" show={complete} options={colunas.medidas} search={formData.medida} onSelect={e => { setForm(e); setComplete("") }} />
+                    <AutocompleteInput label={Messages.COMUM.MEDIDA} value={formData.medida} name="medida"
+                        onChange={e => setForm(e)} options={colunas.medidas} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Quantidade</IonLabel>
-                        <IonInput type="number" value={formData.quantidade} name="quantidade" onIonChange={e => setForm(e)} onIonFocus={() => setComplete("quantidade")} />
-                    </IonItem>
+                    <NumberInput label={Messages.COMUM.QUANTIDADE} name="quantidade" value={formData.quantidade} onChange={e => setForm(e)} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Valor</IonLabel>
-                        <IonInput type="number" value={formData.valor} name="valor" onIonChange={e => setForm(e)} />
-                    </IonItem>
+                    <NumberInput label={Messages.COMUM.VALOR} name="valor" value={formData.valor} onChange={e => setForm(e)} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Total</IonLabel>
-                        <IonInput type="number" disabled="true" value={(formData.valor * formData.quantidade).toFixed(2)} name="total" onIonChange={e => setForm(e)} />
-                    </IonItem>
+                    <NumberInput disabled="true" label={Messages.COMUM.TOTAL} name="total" value={(formData.valor * formData.quantidade).toFixed(2)} onChange={e => setForm(e)} />
 
-                    <IonItem>
-                        <IonLabel position="floating">Observação</IonLabel>
-                        <IonTextarea value={formData.obs} name="obs" onIonChange={e => setForm(e)}></IonTextarea>
-                    </IonItem>
-
+                    <TextArea label={Messages.COMUM.OBSERVACAO} value={formData.obs} name="obs" onChange={e => setForm(e)} />
                 </IonCardContent>
             </IonCard>
         </Modal>

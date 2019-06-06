@@ -4,6 +4,7 @@ import { New } from '../components/Buttons/New';
 import { LabelFooter } from '../components/Footer/LabelFooter';
 import { ActionHeader } from '../components/header/ActionHeader';
 import { Messages } from '../constants';
+import { ComprasCadastroModal } from '../components/Compras/ComprasCadastroModal/ComprasCadastroModal';
 // import { calcularTotal, listarDespesas } from '../../services/DespesasService';
 
 // let onExcluir;
@@ -13,16 +14,20 @@ import { Messages } from '../constants';
 
 const Compras = () => {
 
-    const [filtrar, setFiltrar] = useState(false);
+    const [showFiltros, setFiltrar] = useState(false);
+    const [showCadastro, setCadastrar] = useState(false);
+    const [lista, setLista] = useState(null);
 
-    function cadastrar() {
-    }
+    const abrirModalCadastro = () => setCadastrar(true);
+    const fecharModalCadastro = () => setCadastrar(false);
+    const cadastrar = () => { setLista(null); abrirModalCadastro(); }
 
     return (
         <div>
-            <ActionHeader title={Messages.COMPRAS.TITULO} action={() => setFiltrar(true)} icon='options' />
+            <ActionHeader title={Messages.COMPRAS.TITULO} action={() => abrirModalCadastro()} icon='options' />
 
             <IonContent id="content-container" fullscreen text-center>
+                <ComprasCadastroModal show={showCadastro} dados={lista} hide={()=> fecharModalCadastro()}/>
             </IonContent>
 
             <LabelFooter label={Messages.COMUM.TOTAL + 0} />

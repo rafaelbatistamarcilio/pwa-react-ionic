@@ -7,26 +7,20 @@ import { mapearColunas } from '../../services/DespesasService';
 import { AutocompleteInput } from '../Forms/Inputs/AutoCompleteInput';
 import { Datepicker } from '../Forms/Inputs/DatePicker';
 import { Modal } from '../Modal/Modal';
-import { copy } from '../../utils/ObjectUtils';
+import { updateForm } from '../../services/FormService';
 
 export const FiltroDespesasModal = props => {
 
     const [filtros, setFiltros] = useState({});
     const colunas = useState(mapearColunas())[0];
-
-    function setForm(e) {
-        let form = {};
-        copy(filtros, form)
-        form[e.target.name] = e.target.value;
-        setFiltros(form)
-    }
+    const setForm = e => updateForm({ event: e, formData: filtros, updateState: setFiltros });
 
     return (
         <Modal
             show={props.show} hide={() => props.hide()}
             title={Messages.DESPESAS.FILTRO}
             onCancel={() => setFiltros({})}
-            onConfirm={() => props.filtrar(filtros)}
+            onConfirm={() => { props.hide();  props.filtrar(filtros); }}
             cancelLabel={Messages.COMUM.LIMPAR}
             confirmLabel={Messages.COMUM.FILTRAR}>
 

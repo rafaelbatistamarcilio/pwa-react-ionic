@@ -2,9 +2,9 @@
 import { IonCard, IonCardContent, IonInput } from '@ionic/react';
 import React, { useState } from 'react';
 import { Formats, Messages } from '../../constants';
-import { adicionarDespesa, editarDespesa, isDespesaValida, mapearColunas } from '../../services/DespesasService';
+import { isDespesaValida, mapearColunas } from '../../services/DespesasService';
+import { updateForm } from '../../services/FormService';
 import { toast } from '../../services/MensagemService';
-import { copy } from '../../utils/ObjectUtils';
 import { AutocompleteInput } from '../Forms/Inputs/AutoCompleteInput';
 import { Datepicker } from '../Forms/Inputs/DatePicker';
 import { NumberInput } from '../Forms/Inputs/NumberInput';
@@ -14,30 +14,15 @@ import { Modal } from '../Modal/Modal';
 export const CadastroDespesaModal = props => {
     const [formData, setFormData] = useState({});
     const colunas = useState(mapearColunas())[0];
-
-    function setForm(e) {
-        let form = {};
-        copy(formData, form, props.dados);
-        form[e.target.name] = e.target.value;
-        setFormData(form)
-    }
+    const setForm = e => updateForm({ event: e, formData: formData, updateState: setFormData, defaultData:props.dados });
 
     function salvar() {
         if (!isDespesaValida(formData)) {
-            toast('Preencha o formulario corretamente!');
+            toast(Messages.COMUM.ERRO.FORMULARIO);
         } else {
-            if (props.dados && props.dados.id) {
-                const edit = {};
-                Object.keys(formData).forEach(key => edit[key] = formData[key]);
-                edit.id = props.dados.id;
-                editarDespesa(edit);
-            } else {
-                adicionarDespesa(formData);
-            }
-            setFormData({})
-            toast('Despesa Adicionada');
             props.hide();
-            props.onSave();
+            props.onSave(formData);
+            setFormData({})
         }
     }
 

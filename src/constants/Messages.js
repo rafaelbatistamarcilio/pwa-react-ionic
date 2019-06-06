@@ -9,10 +9,17 @@ const Messages = {
         CADASTRO: {
             NOVA: 'Nova Despesa',
             SUCESSO: 'Despesa cadastrada com sucesso'
+        },
+        EDICAO: {
+            SUCESSO: 'Despesa editado com sucesso'
         }
     },
     COMPRAS: {
-        TITULO: 'Compras'
+        TITULO: 'Compras',
+        CADASTRO: {
+            NOVA: 'Nova Lista de Compras',
+            SUCESSO: 'Lista de compras cadastrada com sucesso'
+        }
     },
     DADOS: {
         TITULO: 'Dados',
@@ -27,6 +34,7 @@ const Messages = {
         CANCELAR: 'Cancelar',
         CONFIRMAR: 'Confirmar',
         SALVAR: 'Salvar',
+        EXCLUIR: 'Excluir',
         LIMPAR: 'Limpar',
         FILTRAR: 'Filtrar',
         DESCRICAO: 'Descrição',
@@ -43,7 +51,10 @@ const Messages = {
         MEDIDA: 'Medida',
         QUANTIDADE: 'Quantidade',
         VALOR: 'Valor',
-        OBSERVACAO: 'Observação'
+        OBSERVACAO: 'Observação',
+        ERRO: {
+            FORMULARIO: 'Preencha o formulário corretamente'
+        }
     }
 }
 

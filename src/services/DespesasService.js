@@ -71,7 +71,6 @@ export const listarDespesas = () => getStore(STORAGE_DESPESAS);
 
 export const filtrarDespesas = filtros => {
     return getStore(STORAGE_DESPESAS).filter(item => {
-
         let possuiDescricao = true;
         let possuiTipo = true;
         let possuiOrigem = true;

@@ -8,8 +8,9 @@ import { LabelFooter } from '../../components/Footer/LabelFooter';
 import { ActionHeader } from '../../components/header/ActionHeader';
 import { Lista } from '../../components/lista/Lista';
 import { Events, Messages } from '../../constants';
-import { calcularTotal, filtrarDespesas, listarDespesas } from '../../services/DespesasService';
-import { monitorarMensagens } from '../../services/MensagemService';
+import { calcularTotal, filtrarDespesas, listarDespesas, editarDespesa, adicionarDespesa } from '../../services/DespesasService';
+import { monitorarMensagens, toast } from '../../services/MensagemService';
+import { copyWithId } from '../../services/FormService';
 
 let onExcluir;
 let onEditar;
@@ -18,35 +19,41 @@ monitorarMensagens(Events.DESPESAS.EDICAO, e => onEditar(e));
 
 const Despesas = () => {
     const [despesas, setDespesas] = useState(listarDespesas());
-    const [filtrar, setFiltrar] = useState(false);
-    const [novo, setNovo] = useState(false);
-    const [despesaEdicao, setDespesaEdicao] = useState(null);
+    const [showFiltros, setFiltrar] = useState(false);
+    const [showCadastro, setCadastrar] = useState(false);
+    const [despesa, setDespesa] = useState(null);
 
     onExcluir = e => setDespesas(listarDespesas());
     onEditar = e => editar(e);
 
-    function cadastrar() {
-        setDespesaEdicao(null);
-        setNovo(true);
-    }
-    function editar(dados) {
-        setDespesaEdicao(dados);
-        setNovo(true);
-    }
+    const abrirModalCadastro = () => setCadastrar(true);
+    const fecharModalCadastro = () => { setCadastrar(false); setDespesa(null); }
+    const abrirModalFiltros = () => setFiltrar(true);
+    const fecharModalFiltros = () => setFiltrar(false);
+    const listar = filtros => setDespesas(filtros ? filtrarDespesas(filtros) : listarDespesas());
+    const cadastrar = () => { setDespesa(null); abrirModalCadastro(); }
+    const editar = dados => { setDespesa(dados); abrirModalCadastro(); }
 
-    function filtrarDados(filtro) {
-        setFiltrar(false);
-        setDespesas(filtrarDespesas(filtro));
+    const onSave = dados => despesa && despesa.id ? salvarEdicao(dados) : savarNova(dados);
+    
+    const salvarEdicao = dados => {
+            editarDespesa(copyWithId(dados, despesa.id));
+            toast(Messages.DESPESAS.EDICAO.SUCESSO);
+    }
+    
+    const savarNova = dados =>{
+        adicionarDespesa(dados);
+        toast(Messages.DESPESAS.CADASTRO.SUCESSO);
     }
 
     return (
         <div>
-            <ActionHeader title={Messages.DESPESAS.TITULO} action={() => setFiltrar(true)} icon='options' />
-            
+            <ActionHeader title={Messages.DESPESAS.TITULO} action={() => abrirModalFiltros()} icon='options' />
+
             <IonContent id="content-container" fullscreen text-center>
                 <Lista data={despesas} component={DespesaItem} />
-                <FiltroDespesasModal show={filtrar} hide={() => setFiltrar(false)} filtrar={(e) => filtrarDados(e)} />
-                <CadastroDespesaModal show={novo} dados={despesaEdicao} hide={() => { setNovo(false); setDespesaEdicao(null) }} onSave={() => setDespesas(listarDespesas())} />
+                <FiltroDespesasModal show={showFiltros} hide={() => fecharModalFiltros()} filtrar={e => listar(e)} />
+                <CadastroDespesaModal show={showCadastro} dados={despesa} hide={() => fecharModalCadastro()} onSave={e => onSave(e)} />
             </IonContent>
 
             <LabelFooter label={Messages.COMUM.TOTAL + calcularTotal(despesas)} />

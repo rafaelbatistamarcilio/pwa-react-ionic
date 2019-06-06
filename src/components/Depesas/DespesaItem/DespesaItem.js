@@ -2,7 +2,7 @@ import { IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLab
 import React from 'react';
 import { excluirDespesa } from '../../../services/DespesasService';
 import { emitirMensagem, toast } from '../../../services/MensagemService';
-import { Events } from '../../../constants';
+import { Events, Messages } from '../../../constants';
 
 function excluir(id) {
     if (excluirDespesa(id)) {
@@ -11,9 +11,7 @@ function excluir(id) {
     }
 }
 
-function editar(despesa) {
-    emitirMensagem(Events.DESPESAS.EDICAO, despesa )
-}
+const editar = despesa => emitirMensagem(Events.DESPESAS.EDICAO, despesa)
 
 export const DespesaItem = props => (
     <IonItemSliding >
@@ -29,7 +27,10 @@ export const DespesaItem = props => (
             </IonLabel>
         </IonItem>
         <IonItemOptions side="end">
-            <IonItemOption color="danger" expandable onClick={() => excluir(props.dados.id)}> Excluir <IonIcon size="large" name="trash"></IonIcon></IonItemOption>
+            <IonItemOption color="danger" expandable onClick={() => excluir(props.dados.id)}>
+                {Messages.COMUM.EXCLUIR}
+                <IonIcon size="large" name="trash"></IonIcon>
+            </IonItemOption>
         </IonItemOptions>
     </IonItemSliding>
 )

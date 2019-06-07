@@ -14,7 +14,7 @@ import { Modal } from '../Modal/Modal';
 export const CadastroDespesaModal = props => {
     const [formData, setFormData] = useState({});
     const colunas = useState(mapearColunas())[0];
-    const setForm = e => updateForm({ event: e, formData: formData, updateState: setFormData, defaultData:props.dados });
+    const setForm = e => updateForm({ event: e, formData: formData, updateState: setFormData, defaultData: props.dados });
 
     function salvar() {
         if (!isDespesaValida(formData)) {

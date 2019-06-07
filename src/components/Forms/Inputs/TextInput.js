@@ -9,6 +9,7 @@ export const TextInput = props => (
             value={props.value}
             name={props.name}
             onIonChange={e => props.onChange ? props.onChange(e) : null}
-            onIonFocus={() => props.onFocus ? props.onFocus() : null} />
+            onIonFocus={() => props.onFocus ? props.onFocus() : null}
+            onIonBlur={() => props.onBlur ? props.onBlur() : null} />
     </IonItem>
 )

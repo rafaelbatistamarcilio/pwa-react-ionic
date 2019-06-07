@@ -1,16 +1,10 @@
-import { calcularTotal, isDespesaValida, listarDespesas, adicionarDespesa } from "../services/DespesasService";
+import { adicionarDespesa, calcularTotal, isDespesaValida, obterDespesaPorId, editarDespesa, listarDespesas, excluirDespesa, limparDespesas } from "../services/DespesasService";
 
 describe('Testes do serviço de despesas', () => {
 
     it('deve calcular o valor total das despesas corretamente', () => {
-        const despesas = [{
-            total: 3
-        }, {
-            total: 5
-        }];
-
+        const despesas = [{ total: 3 }, { total: 5 }];
         const total = calcularTotal(despesas);
-
         expect(total).toEqual("8.00");
     });
 
@@ -33,10 +27,33 @@ describe('Testes do serviço de despesas', () => {
         expect(valida).toEqual(true);
     });
 
-    it('deve incluier despesas corretamente', () => {
-        adicionarDespesa({ descricao: 'DESPESA TESTE', data: '10/10/2019', valor: 10, quantidade: 1 });
-        const despesas = listarDespesas();
-        expect(despesas.length).toEqual(1);
-        expect(despesas[0].descricao).toEqual('DESPESA TESTE');
+    it('deve incluir despesas corretamente', () => {
+        const despesaNova = adicionarDespesa({ descricao: 'DESPESA TESTE', data: '10/10/2019', valor: 10, quantidade: 1 });
+        const despesa = obterDespesaPorId(despesaNova.id);
+        expect(despesa.descricao).toEqual('DESPESA TESTE');
+    });
+
+    it('deve editar despesas corretamente', () => {
+        const despesa = { descricao: 'DESPESA TESTE', data: '10/10/2019', valor: 10, quantidade: 1 };
+        const despesaNova = adicionarDespesa(despesa);
+        const despesaEdicao = obterDespesaPorId(despesaNova.id);
+        expect(despesaEdicao.descricao).toEqual('DESPESA TESTE');
+
+        const expected = 'DESPESA EDITADA';
+        despesaEdicao.descricao = expected;
+        editarDespesa(despesaEdicao);
+
+        const despesaEditada = obterDespesaPorId(despesaNova.id);
+        expect(despesaEditada.descricao).toEqual(expected);
+    });
+
+    it('deve excluir a despesa corretamente', () => {
+        limparDespesas();
+        const despesa = { descricao: 'DESPESA TESTE', data: '10/10/2019', valor: 10, quantidade: 1 };
+        const despesaAdicionada = adicionarDespesa(despesa);
+        expect(listarDespesas().length).toEqual(1);
+
+        excluirDespesa(despesaAdicionada.id);
+        expect(listarDespesas().length).toEqual(0);
     });
 })

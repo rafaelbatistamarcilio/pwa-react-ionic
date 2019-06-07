@@ -13,7 +13,8 @@ export const AutocompleteInput = props => {
                 value={props.value}
                 name={props.name}
                 onChange={e => props.onChange(e)}
-                onFocus={() => setComplete(props.name)} />
+                onFocus={() => setComplete(props.name)}
+                onBlur={()=> setTimeout(()=> setComplete(''), 10)} />
             <Autocomplete
                 name={props.name}
                 show={complete}

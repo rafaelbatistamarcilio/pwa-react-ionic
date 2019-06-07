@@ -1,73 +1,62 @@
 import { excelToJson } from "./ExcelService";
-import { getStore, setData } from "./LocalStorageService";
+import { getStore, setData, save, update, remove, findById, addAll } from "./LocalStorageService";
 import { toast } from "./MensagemService";
+import { dateToString } from "../utils/DateUtils";
+import { toMoney, clearMoney, generateId } from "../utils/MathUtils";
 
 const STORAGE_DESPESAS = 'STORAGE_DESPESAS';
 
+export const adicionarDespesa = despesa => save(STORAGE_DESPESAS, formatarDespesa(despesa))
+
+export const editarDespesa = despesa => update(STORAGE_DESPESAS, despesa);
+
+export const excluirDespesa = id => remove(STORAGE_DESPESAS, id);
+
+/** @returns {any[]} */
+export const listarDespesas = () => getStore(STORAGE_DESPESAS);
+
+/** @returns {{id:nuber}} */
+export const obterDespesaPorId = id => findById(STORAGE_DESPESAS, id);
+
 export const isDespesaValida = despesa => {
-    return  despesa != null && despesa.valor != null && despesa.total != null && despesa.quantidade != null && 
-            despesa.descricao != null && despesa.vendedor != null && despesa.origem != null && despesa.tipo != null && 
-            despesa.data != null && despesa.medida != null && despesa.marca != null ;
+    return despesa != null && despesa.valor != null && despesa.total != null && despesa.quantidade != null &&
+        despesa.descricao != null && despesa.vendedor != null && despesa.origem != null && despesa.tipo != null &&
+        despesa.data != null && despesa.medida != null && despesa.marca != null;
 }
 
-export const adicionarDespesa = despesa => {
-    const despesas = getStore(STORAGE_DESPESAS);
-    despesa.id = new Date().getTime();
-    despesa.quantidade = Number(despesa.quantidade).toFixed(2);
-    despesa.valor = Number(despesa.valor).toFixed(2);
-    despesa.total = (despesa.quantidade * despesa.valor).toFixed(2);
-    despesa.data = despesa.data.substr(0,10).split('-').reverse().join('/')
-    despesas.push(despesa);
-    setData(STORAGE_DESPESAS, despesas);
+export const formatarDespesa = despesa => {
+    despesa.quantidade = toMoney(despesa.quantidade);
+    despesa.valor = toMoney(despesa.valor);
+    despesa.total = calcularTotalDespesa(despesa);
+    despesa.data = dateToString(despesa.data);
+    return despesa;
 }
 
-export const editarDespesa = despesa => {
-    const despesas = getStore(STORAGE_DESPESAS);
-    const despesaAntiga = despesas.filter(item => item.id === despesa.id)[0];
-    Object.keys(despesaAntiga).forEach(key => despesaAntiga[key] = despesa[key]);
-    setData(STORAGE_DESPESAS, despesas);
-}
-
-export const excluirDespesa = id => {
-    const tamanhoOriginal = getStore(STORAGE_DESPESAS).length;
-    const despesas = getStore(STORAGE_DESPESAS).filter(despesa => despesa.id !== id);
-    if (despesas.length !== tamanhoOriginal) {
-        setData(STORAGE_DESPESAS, despesas);
-        return true;
-    }
-    return false;
-}
+export const calcularTotalDespesa = despesa => (despesa.quantidade * despesa.valor).toFixed(2);
 
 export const importarDespesas = async selectorFiles => {
     const dados = await excelToJson(selectorFiles.item(0));
-    const despesas = construirDespesas(dados);
-    let storage = getStore(STORAGE_DESPESAS);
-    storage = storage.concat(despesas);
-    setData(STORAGE_DESPESAS, storage);
+    const despesas = tratarDadosDespesas(dados);
+    addAll(STORAGE_DESPESAS, despesas)
     toast('Dados importados');
 }
 
-const construirDespesas = planilha => {
+const tratarDadosDespesas = planilha => {
     let despesas = [];
-    planilha.forEach((dadosDespesa) => despesas.push(construirDespesa(dadosDespesa)))
+    planilha.forEach((dadosDespesa) => despesas.push(tratarDadosDespesa(dadosDespesa)))
     return despesas;
 }
 
-const construirDespesa = dadosDespesa => {
+const tratarDadosDespesa = dadosDespesa => {
     let despesa = {};
     Object.keys(dadosDespesa).forEach(key => despesa[key.toLocaleLowerCase()] = dadosDespesa[key]);
-    despesa.id = new Date().getTime() + '-' + Math.random();
-    despesa.total = Number(despesa.total.replace('R$ ', ''));
-    despesa.valor = Number(despesa.valor.replace('R$ ', ''));
+    despesa.id = generateId();
+    despesa.total = clearMoney(despesa.total);
+    despesa.valor = clearMoney(despesa.valor);
     return despesa;
 }
 
 export const limparDespesas = () => setData(STORAGE_DESPESAS, null)
-
-/**
- * @returns {any[]}
- */
-export const listarDespesas = () => getStore(STORAGE_DESPESAS);
 
 export const filtrarDespesas = filtros => {
     return getStore(STORAGE_DESPESAS).filter(item => {
@@ -141,9 +130,4 @@ export const listarMarcas = () => listarDespesas().map(despesa => despesa.marca)
 /** @returns {string[]} */
 export const listarMedidas = () => listarDespesas().map(despesa => despesa.medida).filter(fintrarUnicos);
 
-export const calcularTotal = itens => {
-    if (itens && itens.length) {
-        return itens.reduce((total, item) => total + Number(item.total), 0).toFixed(2);
-    }
-    return 0;
-}
+export const calcularTotal = itens => (itens && itens.length) ? itens.reduce((total, item) => total + Number(item.total), 0).toFixed(2) : 0;

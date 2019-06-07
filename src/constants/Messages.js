@@ -40,6 +40,7 @@ const Messages = {
         DESCRICAO: 'Descrição',
         ORIGEM: 'Origem',
         TIPO: 'Tipo',
+        ITENS: 'Itens',
         TOTAL: 'Total:',
         MENU: 'Menu',
         CARREGANDO: 'Carregando...',

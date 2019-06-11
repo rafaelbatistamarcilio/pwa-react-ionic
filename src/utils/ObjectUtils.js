@@ -1,4 +1,4 @@
 
-export const copy = (from, to, defaultObj = null) => Object.keys(from).forEach(key => to[key] = from[key] ? from[key] : defaultObj ? defaultObj[key] : null);
+export const copy = (from, to, defaultObj = null) => Object.assign(to, from, defaultObj);
 
 export const values = obj => Object.values(obj);

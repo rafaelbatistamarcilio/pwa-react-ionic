@@ -1,6 +1,7 @@
 import { save, update, remove, getStore, findById } from "./LocalStorageService";
 import { dateToString } from "../utils/DateUtils";
 import { Messages } from "../constants";
+import { obterDespesaPorCompra, excluirDespesa } from "./DespesasService";
 
 const STORAGE_COMPRAS = 'STORAGE_COMPRAS';
 
@@ -8,13 +9,19 @@ const STORAGE_COMPRAS = 'STORAGE_COMPRAS';
  * @param {{ data: string, descricao: string, itens: {data:string}[] }} compras 
  */
 export const adicionarCompras = dados => {
-    validarCompras(dados); 
+    validarCompras(dados);
     return save(STORAGE_COMPRAS, formatarCompras(dados));
 }
 
-export const editarCompras = dados => update(STORAGE_COMPRAS, dados);
+export const editarCompras = dados => {
+    validarCompras(dados);
+    update(STORAGE_COMPRAS, formatarCompras(dados))
+};
 
-export const excluirCompras = id => remove(STORAGE_COMPRAS, id);
+export const excluirCompras = id => {
+    obterDespesaPorCompra(id).forEach( despesa => excluirDespesa(despesa.id) );
+    remove(STORAGE_COMPRAS, id);
+};
 
 /** @returns {any[]} */
 export const listarCompras = () => getStore(STORAGE_COMPRAS);

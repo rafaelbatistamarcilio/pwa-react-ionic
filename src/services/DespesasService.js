@@ -18,6 +18,9 @@ export const listarDespesas = () => getStore(STORAGE_DESPESAS);
 /** @returns {{id:nuber}} */
 export const obterDespesaPorId = id => findById(STORAGE_DESPESAS, id);
 
+/** @returns {{id:nuber}} */
+export const obterDespesaPorCompra = id => listarDespesas().filter(despesa => despesa.comprasId === id);
+
 export const isDespesaValida = despesa => {
     return despesa != null && despesa.valor != null && despesa.total != null && despesa.quantidade != null &&
         despesa.descricao != null && despesa.vendedor != null && despesa.origem != null && despesa.tipo != null &&

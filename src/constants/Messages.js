@@ -19,6 +19,9 @@ const Messages = {
         CADASTRO: {
             NOVA: 'Nova Lista de Compras',
             SUCESSO: 'Lista de compras cadastrada com sucesso'
+        },
+        EXCLUSAO:{
+            SUCESSO: id => `Despesa id ${id} excluída`
         }
     },
     DADOS: {

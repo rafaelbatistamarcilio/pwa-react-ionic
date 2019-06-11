@@ -10,6 +10,7 @@ import { Datepicker } from '../Forms/Inputs/DatePicker';
 import { NumberInput } from '../Forms/Inputs/NumberInput';
 import { TextArea } from '../Forms/Inputs/TextArea';
 import { Modal } from '../Modal/Modal';
+import { toEUADate } from '../../utils/DateUtils';
 
 export const CadastroDespesaModal = props => {
     const [formData, setFormData] = useState({});
@@ -29,7 +30,7 @@ export const CadastroDespesaModal = props => {
     function carregarDados(dados) {
         if (dados) {
             const copy = Object.assign({}, dados);
-            copy.data = copy.data.split('/').reverse().join('-')
+            copy.data = toEUADate(copy.data);
             setFormData(copy);
         }
     }

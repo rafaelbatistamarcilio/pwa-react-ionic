@@ -3,10 +3,10 @@ import { IonIcon, IonList } from '@ionic/react';
 import React, { useState } from 'react';
 
 /** @param {any[]} dados  */
-const montarLinhas = (dados, limite, Component) => {
+const montarLinhas = (dados, limite, Component, events) => {
     const size = dados.length < limite ? dados.length : limite;
     if (dados.length) {
-        return dados.slice(0, size).map(item => (<Component key={item.id} dados={item} />))
+        return dados.slice(0, size).map(item => (<Component key={item.id} dados={item} events={events}/>))
     }
 
     return ('Nenhum resultado')
@@ -17,7 +17,7 @@ export const Lista = props => {
     return (
         <div>
             <IonList >
-                {montarLinhas(props.data, limite, props.component)}
+                {montarLinhas(props.data, limite, props.component, props.events)}
             </IonList>
             {
                 limite < props.data.length ? <IonIcon size="large" color="primary" name="arrow-dropdown-circle" onClick={() => setLimite(limite + 10)} /> : ""
